@@ -1,0 +1,98 @@
+﻿@using SmartInventorySystem.ViewModels
+@model RoleViewModel
+
+@{
+    ViewData["Title"] = "Delete Role";
+}
+
+<style>
+    /* Entrance Animation override */
+    .animate__headShake {
+        animation-duration: 1s;
+    }
+
+    /* Button Micro-interactions */
+    .hover-lift {
+        transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.2s ease;
+    }
+
+        .hover-lift:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(220, 53, 69, 0.2) !important;
+        }
+
+    /* Alert Styling */
+    .alert-danger {
+        background-color: #fff5f5;
+        color: #c53030;
+    }
+
+    .bg-danger.bg-gradient {
+        background: linear-gradient(135deg, #f56565 0%, #c53030 100%) !important;
+    }
+</style>
+
+<div class="container py-5 animate__animated animate__headShake">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="bg-danger bg-gradient py-4 text-center text-white">
+                    <div class="mb-2">
+                        <i class="bi bi-shield-exclamation display-4"></i>
+                    </div>
+                    <h3 class="fw-bold mb-0">Delete Security Role</h3>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <p class="text-muted">You are about to permanently delete the role:</p>
+                        <h2 class="fw-bold text-dark">@Model.Name</h2>
+                    </div>
+
+                    <div class="alert alert-danger border-0 rounded-3 p-3 mb-4">
+                        <div class="d-flex align-items-center">
+                            <i class="bi bi-info-circle-fill fs-4 me-3"></i>
+                            <div>
+                                <h6 class="fw-bold mb-1">Impact Analysis</h6>
+                                <p class="small mb-0">
+                                    <strong>@Model.UserCount</strong> users are currently assigned to this role and will lose associated permissions.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete" id="deleteRoleForm">
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger btn-lg py-3 fw-bold shadow-sm hover-lift" id="confirmBtn">
+                                Confirm Deletion
+                            </button>
+                            <a asp-action="Index" class="btn btn-light btn-lg py-3 fw-semibold border">
+                                Keep Role
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <small class="text-muted">
+                    <i class="bi bi-lock-fill me-1"></i>
+                    This action will be logged in the system audit trail.
+                </small>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Prevent accidental double-clicks and show loading state
+        document.getElementById('deleteRoleForm').onsubmit = function() {
+            const btn = document.getElementById('confirmBtn');
+            btn.disabled = true;
+            btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Deleting Role...`;
+        };
+    </script>
+}

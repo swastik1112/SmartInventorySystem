@@ -1,0 +1,130 @@
+﻿@using SmartInventorySystem.ViewModels
+@model RoleCreateViewModel
+
+@{
+    ViewData["Title"] = "Create New Role";
+}
+<style>
+    /* Custom Spacing & Transitions */
+    .transition-base {
+        transition: all 0.3s ease;
+    }
+
+        .transition-base:focus-within {
+            border-color: #198754 !important;
+            box-shadow: 0 0 0 4px rgba(25, 135, 84, 0.15);
+        }
+
+    .tracking-wider {
+        letter-spacing: 0.05rem;
+    }
+
+    .fs-xs {
+        font-size: 0.65rem;
+    }
+
+    /* Success Sublte (Bootstrap 5.3 Utility fallback) */
+    .bg-success-subtle {
+        background-color: rgba(25, 135, 84, 0.1) !important;
+    }
+
+    .bg-info-subtle {
+        background-color: rgba(13, 202, 240, 0.1) !important;
+    }
+
+    .text-info-emphasis {
+        color: #055160 !important;
+    }
+</style>
+
+<div class="container py-5 animate__animated animate__fadeInDown">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="text-center mb-4">
+                <div class="d-inline-block p-3 rounded-circle bg-success-subtle mb-3">
+                    <i class="bi bi-shield-plus fs-1 text-success"></i>
+                </div>
+                <h2 class="fw-bold">New Security Role</h2>
+                <p class="text-muted">Define a new access level for your team members</p>
+            </div>
+
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Create" id="roleForm">
+                        <div class="mb-4">
+                            <label asp-for="Name" class="form-label fw-bold text-dark small text-uppercase tracking-wider">Role Designation</label>
+                            <div class="input-group input-group-lg border rounded-3 overflow-hidden transition-base">
+                                <span class="input-group-text bg-white border-0">
+                                    <i class="bi bi-person-badge text-muted"></i>
+                                </span>
+                                <input asp-for="Name" id="RoleNameInput" class="form-control border-0 ps-0 shadow-none"
+                                       placeholder="e.g. Warehouse Manager" autocomplete="off" />
+                            </div>
+                            <span asp-validation-for="Name" class="text-danger small mt-1 d-block"></span>
+                        </div>
+
+                        <div class="mb-4 p-3 bg-light rounded-3 text-center border border-dashed">
+                            <small class="text-muted d-block mb-2 text-uppercase fs-xs">Live Preview</small>
+                            <span id="RolePreviewBadge" class="badge bg-success rounded-pill px-3 py-2 shadow-sm">
+                                New Role
+                            </span>
+                        </div>
+
+                        <div class="row g-2">
+                            <div class="col-8">
+                                <button type="submit" class="btn btn-success btn-lg w-100 fw-bold hover-lift shadow-sm" id="submitBtn">
+                                    <i class="bi bi-check-lg me-2"></i>Confirm and Create
+                                </button>
+                            </div>
+                            <div class="col-4">
+                                <a asp-action="Index" class="btn btn-light btn-lg w-100 fw-semibold border">
+                                    Cancel
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="mt-4 text-center">
+                <div class="card bg-info-subtle border-0 rounded-4">
+                    <div class="card-body p-3">
+                        <small class="text-info-emphasis">
+                            <i class="bi bi-info-circle-fill me-1"></i>
+                            Roles created here can be assigned to users in the <strong>User Management</strong> section.
+                        </small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        const nameInput = document.getElementById('RoleNameInput');
+        const previewBadge = document.getElementById('RolePreviewBadge');
+
+        // Update the preview badge in real-time
+        nameInput.addEventListener('input', function(e) {
+            const val = e.target.value.trim();
+            previewBadge.textContent = val.length > 0 ? val : "New Role";
+
+            // Randomly change badge color for fun visual feedback? (Optional)
+            if(val.toLowerCase() === 'admin') {
+                previewBadge.className = "badge bg-danger rounded-pill px-3 py-2 shadow-sm animate__animated animate__pulse";
+            } else {
+                previewBadge.className = "badge bg-success rounded-pill px-3 py-2 shadow-sm";
+            }
+        });
+
+        // Button Loading State
+        document.getElementById('roleForm').onsubmit = function() {
+            if($(this).valid()){
+                const btn = document.getElementById('submitBtn');
+                btn.disabled = true;
+                btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Creating...`;
+            }
+        };
+    </script>
+}
