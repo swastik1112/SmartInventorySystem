@@ -1,0 +1,84 @@
+﻿@model Purchase
+
+@{
+    ViewData["Title"] = "Purchase Order Details";
+    var totalCost = Model.Quantity * Model.PricePerUnit;
+}
+
+<div class="container py-5 animate__animated animate__fadeIn">
+    <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+        <a asp-action="Index" class="text-decoration-none text-muted">
+            <i class="bi bi-arrow-left me-1"></i> Back to History
+        </a>
+        <div class="d-flex gap-2">
+            <button onclick="window.print()" class="btn btn-outline-dark rounded-3">
+                <i class="bi bi-printer me-2"></i>Print Voucher
+            </button>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+        <div class="card-header bg-success py-5 text-white text-center">
+            <i class="bi bi-box-seam display-4 mb-2"></i>
+            <h2 class="fw-bold mb-0">Purchase Voucher</h2>
+            <p class="opacity-75">Transaction ID: #PO-@Model.Id.ToString("D5")</p>
+        </div>
+
+        <div class="card-body p-4 p-md-5">
+            <div class="row g-4 mb-5">
+                <div class="col-md-6">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Supplier Information</h6>
+                    <h4 class="fw-bold text-dark mb-1">@Model.Supplier?.Name</h4>
+                    <p class="text-muted mb-0">
+                        <i class="bi bi-person me-2"></i>@Model.Supplier?.ContactPerson<br />
+                        <i class="bi bi-envelope me-2"></i>@Model.Supplier?.Email<br />
+                        <i class="bi bi-geo-alt me-2"></i>@Model.Supplier?.Address
+                    </p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <h6 class="text-uppercase text-muted fw-bold small mb-3">Order Details</h6>
+                    <p class="mb-1"><strong>Date Received:</strong> @Model.PurchaseDate.ToString("MMMM dd, yyyy")</p>
+                    <p class="mb-1"><strong>Time:</strong> @Model.PurchaseDate.ToShortTimeString()</p>
+                    <span class="badge bg-success-subtle text-success border border-success px-3">Status: Stocked</span>
+                </div>
+            </div>
+
+            <div class="table-responsive mb-4">
+                <table class="table table-bordered border-light-subtle">
+                    <thead class="bg-light">
+                        <tr>
+                            <th class="py-3">Product Description</th>
+                            <th class="py-3 text-center">Quantity</th>
+                            <th class="py-3 text-end">Unit Cost</th>
+                            <th class="py-3 text-end">Subtotal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="py-4">
+                                <span class="fw-bold d-block">@Model.Product?.Name</span>
+                                <small class="text-muted">SKU: @Model.ProductId.ToString("D6")</small>
+                            </td>
+                            <td class="py-4 text-center fs-5">@Model.Quantity</td>
+                            <td class="py-4 text-end">@Model.PricePerUnit.ToString("C")</td>
+                            <td class="py-4 text-end fw-bold">@totalCost.ToString("C")</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row justify-content-end">
+                <div class="col-md-4">
+                    <div class="d-flex justify-content-between p-2">
+                        <span class="text-muted">Grand Total:</span>
+                        <h3 class="fw-bold text-success">@totalCost.ToString("C")</h3>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer bg-light py-3 text-center">
+            <small class="text-muted">This is a system-generated stock receiving voucher.</small>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,60 @@
+﻿@model Sale
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card border-0 shadow-lg rounded-4">
+                <div class="card-header bg-primary py-4 text-center text-white">
+                    <h3 class="fw-bold mb-0"><i class="bi bi-receipt me-2"></i>New Sale Record</h3>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="Create">
+                        <div class="row g-3">
+                            <div class="col-12">
+                                <label class="form-label fw-bold">Customer Name</label>
+                                <input asp-for="CustomerName" class="form-control bg-light border-0" placeholder="Guest Customer" />
+                            </div>
+                            <div class="col-md-8">
+                                <label class="form-label fw-bold">Product</label>
+                                <select asp-for="ProductId" class="form-select bg-light border-0" asp-items="ViewBag.Products"></select>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="form-label fw-bold">Sale Date</label>
+                                <input asp-for="SaleDate" type="date" class="form-control bg-light border-0" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Quantity to Sell</label>
+                                <input asp-for="Quantity" id="sqty" class="form-control bg-light border-0" />
+                            </div>
+                            <div class="col-md-6">
+                                <label class="form-label fw-bold">Price Per Unit</label>
+                                <input asp-for="PricePerUnit" id="sprice" class="form-control bg-light border-0" />
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-3 rounded-3 bg-primary-subtle border border-primary text-center">
+                            <span class="text-uppercase small fw-bold text-primary">Total Revenue</span>
+                            <h2 class="fw-bold text-primary mb-0">$<span id="stotal">0.00</span></h2>
+                        </div>
+
+                        <div class="d-grid gap-2 mt-4">
+                            <button type="submit" class="btn btn-primary btn-lg py-3 fw-bold rounded-3">Process Sale</button>
+                            <a asp-action="Index" class="btn btn-link text-muted">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    const sqty = document.getElementById('sqty');
+    const sprice = document.getElementById('sprice');
+    const stotal = document.getElementById('stotal');
+
+    [sqty, sprice].forEach(el => el.addEventListener('input', () => {
+        const res = (parseFloat(sqty.value) || 0) * (parseFloat(sprice.value) || 0);
+        stotal.innerText = res.toLocaleString(undefined, {minimumFractionDigits: 2});
+    }));
+</script>

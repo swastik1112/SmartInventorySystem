@@ -1,0 +1,73 @@
+﻿@model Sale
+
+@{
+    ViewData["Title"] = "Void Sale Record";
+    var totalRevenue = Model.Quantity * Model.PricePerUnit;
+}
+
+<div class="container py-5 animate__animated animate__headShake">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="bg-dark py-4 text-center text-white border-bottom border-danger border-4">
+                    <i class="bi bi-receipt display-4 mb-2 d-block text-danger"></i>
+                    <h3 class="fw-bold mb-0 text-uppercase">Void Invoice</h3>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <p class="text-muted mb-1">Deleting sale for customer:</p>
+                        <h4 class="fw-bold text-dark">@Model.CustomerName</h4>
+                        <span class="badge bg-danger-subtle text-danger px-3">Invoice #INV-@Model.Id.ToString("D5")</span>
+                    </div>
+
+                    <div class="alert alert-danger border-0 rounded-4 p-3 d-flex align-items-center mb-4">
+                        <i class="bi bi-shield-exclamation fs-3 me-3"></i>
+                        <div class="small">
+                            <strong>Warning:</strong> This will permanently remove the revenue record from your ledger. This action is irreversible.
+                        </div>
+                    </div>
+
+                    <div class="bg-light rounded-4 p-4 mb-4 border">
+                        <div class="row g-3">
+                            <div class="col-5 text-muted small fw-bold text-uppercase">Product Sold</div>
+                            <div class="col-7 small text-dark">@Model.Product?.Name</div>
+
+                            <div class="col-5 text-muted small fw-bold text-uppercase">Quantity</div>
+                            <div class="col-7 small text-dark fw-bold">@Model.Quantity Units</div>
+
+                            <div class="col-5 text-muted small fw-bold text-uppercase">Revenue Lost</div>
+                            <div class="col-7 h5 mb-0 text-danger fw-bold">@totalRevenue.ToString("C")</div>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn btn-outline-danger btn-lg py-3 fw-bold rounded-3 hover-lift">
+                                <i class="bi bi-trash3-fill me-2"></i>Confirm Deletion
+                            </button>
+                            <a asp-action="Index" class="btn btn-primary btn-lg py-3 fw-bold rounded-3 shadow">
+                                No, Keep This Sale
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bg-danger-subtle {
+        background-color: #f8d7da !important;
+    }
+
+    .hover-lift {
+        transition: transform 0.2s;
+    }
+
+        .hover-lift:hover {
+            transform: translateY(-2px);
+        }
+</style>

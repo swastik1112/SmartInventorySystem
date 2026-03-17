@@ -1,0 +1,58 @@
+﻿@model Purchase
+
+@{
+    ViewData["Title"] = "Delete Purchase Record";
+    var totalCost = Model.Quantity * Model.PricePerUnit;
+}
+
+<div class="container py-5 animate__animated animate__headShake">
+    <div class="row justify-content-center">
+        <div class="col-lg-6">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="bg-danger py-4 text-center text-white">
+                    <i class="bi bi-exclamation-octagon display-4 mb-2 d-block"></i>
+                    <h3 class="fw-bold mb-0">Void Purchase Order</h3>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <p class="text-muted mb-1">You are about to remove this procurement record:</p>
+                        <h4 class="fw-bold text-dark">#PO-@Model.Id.ToString("D5")</h4>
+                    </div>
+
+                    <div class="alert alert-warning border-0 rounded-4 p-3 d-flex align-items-center mb-4">
+                        <i class="bi bi-info-circle-fill fs-4 me-3"></i>
+                        <div class="small">
+                            <strong>Note:</strong> Deleting this record removes the financial entry. It will <strong>not</strong> automatically deduct the stock from the warehouse.
+                        </div>
+                    </div>
+
+                    <div class="bg-light rounded-4 p-4 mb-4 border">
+                        <div class="row g-3">
+                            <div class="col-5 text-muted small fw-bold text-uppercase">Supplier</div>
+                            <div class="col-7 small text-dark fw-semibold">@Model.Supplier?.Name</div>
+
+                            <div class="col-5 text-muted small fw-bold text-uppercase">Product</div>
+                            <div class="col-7 small text-dark">@Model.Product?.Name</div>
+
+                            <div class="col-5 text-muted small fw-bold text-uppercase">Total Amount</div>
+                            <div class="col-7 small text-danger fw-bold">@totalCost.ToString("C")</div>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="d-grid gap-3">
+                            <button type="submit" class="btn btn-danger btn-lg py-3 fw-bold rounded-3 shadow-sm hover-lift">
+                                <i class="bi bi-trash3 me-2"></i>Permanently Delete Record
+                            </button>
+                            <a asp-action="Index" class="btn btn-light btn-lg py-3 fw-semibold border rounded-3 text-muted">
+                                Cancel
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

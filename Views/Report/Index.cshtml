@@ -1,0 +1,102 @@
+﻿@model IEnumerable<Sale>
+
+@{
+    ViewData["Title"] = "Business Reports";
+    decimal revenue = ViewBag.TotalRevenue ?? 0;
+    decimal expense = ViewBag.TotalExpenditure ?? 0;
+    decimal profit = revenue - expense;
+}
+<div style="min-height: 5vh;"></div>
+<div class="container-fluid py-4">
+    <div class="mb-4">
+        <h2 class="fw-bold"><i class="bi bi-bar-chart-line text-primary me-2"></i>Executive Summary</h2>
+        <p class="text-muted">Financial overview and inventory health metrics.</p>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-primary text-white">
+                <small class="text-uppercase opacity-75 fw-bold">Gross Revenue</small>
+                <h3 class="fw-bold mb-0">@revenue.ToString("C")</h3>
+                <i class="bi bi-graph-up-arrow position-absolute end-0 bottom-0 m-3 opacity-25 display-6"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-danger text-white">
+                <small class="text-uppercase opacity-75 fw-bold">Total Expenses</small>
+                <h3 class="fw-bold mb-0">@expense.ToString("C")</h3>
+                <i class="bi bi-graph-down-arrow position-absolute end-0 bottom-0 m-3 opacity-25 display-6"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-success text-white">
+                <small class="text-uppercase opacity-75 fw-bold">Net Profit</small>
+                <h3 class="fw-bold mb-0">@profit.ToString("C")</h3>
+                <i class="bi bi-cash-stack position-absolute end-0 bottom-0 m-3 opacity-25 display-6"></i>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="card border-0 shadow-sm rounded-4 p-3 bg-white border">
+                <small class="text-uppercase text-muted fw-bold">Low Stock Alerts</small>
+                <h3 class="fw-bold mb-0 text-warning">@ViewBag.LowStockCount</h3>
+                <i class="bi bi-exclamation-triangle position-absolute end-0 bottom-0 m-3 text-warning opacity-50 display-6"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-7 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 h-100">
+                <div class="card-body">
+                    <h5 class="fw-bold mb-4">Financial Balance</h5>
+                    <div class="mb-4">
+                        <div class="d-flex justify-content-between mb-1">
+                            <span class="small fw-bold">Revenue vs Expense Ratio</span>
+                            <span class="small text-muted">@(expense > 0 ? (revenue / expense).ToString("P") : "100%")</span>
+                        </div>
+                        <div class="progress" style="height: 12px;">
+                            <div class="progress-bar bg-primary" role="progressbar" style="width: 70%"></div>
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: 30%"></div>
+                        </div>
+                    </div>
+
+                    <h6 class="fw-bold small text-muted text-uppercase mb-3">Recent Sales Activity</h6>
+                    <div class="table-responsive">
+                        <table class="table table-sm align-middle">
+                            <thead class="text-muted small">
+                                <tr>
+                                    <th>Date</th>
+                                    <th>Product</th>
+                                    <th class="text-end">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach (var sale in Model)
+                                {
+                                    <tr>
+                                        <td class="small">@sale.SaleDate.ToShortDateString()</td>
+                                        <td class="fw-semibold">@sale.Product?.Name</td>
+                                        <td class="text-end text-primary fw-bold">@((sale.Quantity * sale.PricePerUnit).ToString("C"))</td>
+                                    </tr>
+                                }
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-5 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 bg-light border h-100">
+                <div class="card-body text-center p-5">
+                    <i class="bi bi-file-earmark-spreadsheet display-1 text-success mb-3"></i>
+                    <h4 class="fw-bold">Data Export Center</h4>
+                    <p class="text-muted px-4">Download your entire warehouse, sales, and purchase datasets in Excel format for external auditing.</p>
+                    <a asp-action="ExportExcel" class="btn btn-success btn-lg rounded-pill px-5 shadow">
+                        <i class="bi bi-download me-2"></i>Generate Excel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

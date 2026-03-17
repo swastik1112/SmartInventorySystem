@@ -1,0 +1,179 @@
+﻿@model IEnumerable<Purchase>
+
+@{
+    ViewData["Title"] = "Purchase History";
+    // Quick Logic for KPIs
+    var totalInvestment = Model.Sum(p => p.Quantity * p.PricePerUnit);
+    var totalUnitsReceived = Model.Sum(p => p.Quantity);
+    var activeSuppliers = Model.Select(p => p.SupplierId).Distinct().Count();
+}
+<div style="min-height: 5vh;"></div>
+<div class="container-fluid py-4 animate__animated animate__fadeIn">
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold text-dark mb-1">
+                <i class="bi bi-cart-check text-success me-2"></i>Purchase History
+            </h2>
+            <p class="text-muted mb-0">Monitor incoming stock and procurement costs.</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-secondary rounded-pill px-3 shadow-sm">
+                <i class="bi bi-file-earmark-excel me-1"></i> Export
+            </button>
+            <a asp-action="Create" class="btn btn-success rounded-pill px-4 shadow-sm hover-lift">
+                <i class="bi bi-plus-lg me-1"></i> New Purchase
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-3 mb-4">
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-3">
+                <div class="d-flex align-items-center">
+                    <div class="icon-shape bg-success-subtle text-success rounded-3 p-3 me-3">
+                        <i class="bi bi-wallet2 fs-4"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-0 small uppercase fw-bold">Total Spent</h6>
+                        <h4 class="fw-bold mb-0">@totalInvestment.ToString("C")</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-3">
+                <div class="d-flex align-items-center">
+                    <div class="icon-shape bg-primary-subtle text-primary rounded-3 p-3 me-3">
+                        <i class="bi bi-box-arrow-in-down fs-4"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-0 small uppercase fw-bold">Units Received</h6>
+                        <h4 class="fw-bold mb-0">@totalUnitsReceived <span class="fs-6 fw-normal text-muted">Items</span></h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card border-0 shadow-sm rounded-4 p-3">
+                <div class="d-flex align-items-center">
+                    <div class="icon-shape bg-purple-subtle text-purple rounded-3 p-3 me-3">
+                        <i class="bi bi-truck fs-4"></i>
+                    </div>
+                    <div>
+                        <h6 class="text-muted mb-0 small uppercase fw-bold">Suppliers Used</h6>
+                        <h4 class="fw-bold mb-0">@activeSuppliers</h4>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4 py-3 text-muted fs-xs fw-bold text-uppercase">Date</th>
+                        <th class="py-3 text-muted fs-xs fw-bold text-uppercase">Product</th>
+                        <th class="py-3 text-muted fs-xs fw-bold text-uppercase">Supplier</th>
+                        <th class="py-3 text-muted fs-xs fw-bold text-uppercase">Quantity</th>
+                        <th class="py-3 text-muted fs-xs fw-bold text-uppercase">Unit Price</th>
+                        <th class="py-3 text-muted fs-xs fw-bold text-uppercase">Total Cost</th>
+                        <th class="py-3 text-muted fs-xs fw-bold text-uppercase text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center py-5">
+                                <i class="bi bi-cart-x display-4 text-muted opacity-25"></i>
+                                <p class="text-muted mt-3">No purchase history found.</p>
+                            </td>
+                        </tr>
+                    }
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-4">
+                                <span class="text-dark fw-medium">@item.PurchaseDate.ToString("dd MMM yyyy")</span>
+                            </td>
+                            <td>
+                                <div class="d-flex flex-column">
+                                    <span class="fw-bold text-dark">@item.Product?.Name</span>
+                                    <small class="text-muted fs-xs">ID: #PROD-@item.ProductId</small>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-xs bg-light text-success border rounded-circle me-2 d-flex align-items-center justify-content-center fw-bold" style="width: 28px; height: 28px; font-size: 11px;">
+                                        @(item.Supplier?.Name?.Substring(0, 1).ToUpper() ?? "S")
+                                    </div>
+                                    <span class="text-muted">@item.Supplier?.Name</span>
+                                </div>
+                            </td>
+                            <td>
+                                <span class="badge bg-success-subtle text-success px-3 py-2 rounded-pill fw-bold">
+                                    + @item.Quantity
+                                </span>
+                            </td>
+                            <td>@item.PricePerUnit.ToString("C")</td>
+                            <td>
+                                <span class="fw-bold text-dark">@((item.Quantity * item.PricePerUnit).ToString("C"))</span>
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="btn-group shadow-sm rounded-3">
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-white btn-sm border" title="View Details">
+                                        <i class="bi bi-eye text-primary"></i>
+                                    </a>
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-white btn-sm border" title="Remove Entry">
+                                        <i class="bi bi-trash text-danger"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<style>
+    .fs-xs {
+        font-size: 0.75rem;
+    }
+
+    .bg-success-subtle {
+        background-color: #d1e7dd !important;
+    }
+
+    .bg-primary-subtle {
+        background-color: #cfe2ff !important;
+    }
+
+    .bg-purple-subtle {
+        background-color: #e2d9f3 !important;
+    }
+
+    .text-purple {
+        color: #6f42c1 !important;
+    }
+
+    .hover-lift {
+        transition: transform 0.2s;
+    }
+
+        .hover-lift:hover {
+            transform: translateY(-2px);
+        }
+
+    .btn-white {
+        background: white;
+    }
+
+        .btn-white:hover {
+            background: #f8f9fa;
+        }
+</style>

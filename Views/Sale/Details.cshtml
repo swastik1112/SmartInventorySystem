@@ -1,0 +1,115 @@
+﻿@model Sale
+
+@{
+    ViewData["Title"] = "Sale Invoice";
+    var totalRevenue = Model.Quantity * Model.PricePerUnit;
+}
+
+<div class="container py-5 animate__animated animate__fadeIn">
+    <div class="d-flex justify-content-between align-items-center mb-4 no-print">
+        <a asp-action="Index" class="text-decoration-none text-muted">
+            <i class="bi bi-chevron-left"></i> Back to Ledger
+        </a>
+        <button onclick="window.print()" class="btn btn-primary rounded-3 px-4 shadow-sm">
+            <i class="bi bi-printer-fill me-2"></i>Download Invoice
+        </button>
+    </div>
+
+    <div class="card border-0 shadow-lg rounded-4 overflow-hidden bg-white">
+        <div class="card-body p-0">
+            <div class="p-5 bg-dark text-white d-flex justify-content-between align-items-center">
+                <div>
+                    <h1 class="fw-bold mb-0">INVOICE</h1>
+                    <p class="mb-0 opacity-50">#INV-@Model.Id.ToString("D5")</p>
+                </div>
+                <div class="text-end">
+                    <h5 class="fw-bold mb-0">Smart Inventory System</h5>
+                    <small class="opacity-50">Logistics Hub 01</small>
+                </div>
+            </div>
+
+            <div class="p-5">
+                <div class="row mb-5">
+                    <div class="col-6">
+                        <p class="text-muted text-uppercase small fw-bold mb-2">Billed To</p>
+                        <h4 class="fw-bold text-primary">@Model.CustomerName</h4>
+                        <p class="text-muted small">Standard Terms: Net 0<br />Payment Status: Paid</p>
+                    </div>
+                    <div class="col-6 text-end">
+                        <p class="text-muted text-uppercase small fw-bold mb-2">Date Issued</p>
+                        <h5 class="fw-bold">@Model.SaleDate.ToString("MMM dd, yyyy")</h5>
+                        <p class="text-muted small">Time: @Model.SaleDate.ToShortTimeString()</p>
+                    </div>
+                </div>
+
+                <div class="table-responsive mb-5">
+                    <table class="table table-borderless">
+                        <thead class="border-bottom">
+                            <tr class="text-muted small uppercase">
+                                <th class="pb-3">Item Description</th>
+                                <th class="pb-3 text-center">Qty</th>
+                                <th class="pb-3 text-end">Price</th>
+                                <th class="pb-3 text-end">Amount</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-bottom">
+                                <td class="py-4">
+                                    <span class="h6 fw-bold mb-0">@Model.Product?.Name</span>
+                                    <p class="text-muted small mb-0">Stock Sale Transaction</p>
+                                </td>
+                                <td class="py-4 text-center fs-5">@Model.Quantity</td>
+                                <td class="py-4 text-end text-muted">@Model.PricePerUnit.ToString("C")</td>
+                                <td class="py-4 text-end fw-bold text-dark">@totalRevenue.ToString("C")</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="row align-items-center">
+                    <div class="col-md-7">
+                        <div class="alert alert-primary border-0 rounded-4 p-4">
+                            <h6 class="fw-bold"><i class="bi bi-info-circle me-2"></i>Important Note</h6>
+                            <p class="mb-0 small">This document serves as proof of purchase and withdrawal of stock from the warehouse. Thank you for your business!</p>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <div class="bg-light rounded-4 p-4">
+                            <div class="d-flex justify-content-between mb-2">
+                                <span class="text-muted">Subtotal</span>
+                                <span>@totalRevenue.ToString("C")</span>
+                            </div>
+                            <div class="d-flex justify-content-between mb-3 border-bottom pb-2">
+                                <span class="text-muted">Tax (0%)</span>
+                                <span>$0.00</span>
+                            </div>
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="h5 fw-bold mb-0">Total</span>
+                                <span class="h3 fw-bold text-primary mb-0">@totalRevenue.ToString("C")</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    @@media print {
+        .no-print {
+            display: none !important;
+        }
+
+        .container {
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 0 !important;
+        }
+
+        .card {
+            border: none !important;
+            shadow: none !important;
+        }
+    }
+</style>
