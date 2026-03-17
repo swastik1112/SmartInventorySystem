@@ -1,0 +1,91 @@
+﻿@model SmartInventorySystem.Models.Product
+
+@{
+    ViewData["Title"] = "Product Details";
+    var statusColor = Model.Quantity <= 0 ? "danger" : (Model.Quantity < Model.MinStockLevel ? "warning" : "success");
+}
+
+<div class="container py-5 animate__animated animate__fadeIn">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <a asp-action="Index" class="text-decoration-none small text-muted">
+            <i class="bi bi-arrow-left me-1"></i> Back to Inventory
+        </a>
+    </nav>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-header bg-white border-0 pt-4 px-4">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <div>
+                            <span class="badge bg-@statusColor-subtle text-@statusColor border border-@statusColor mb-2">
+                                <i class="bi bi-circle-fill me-1 small"></i>
+                                @(Model.Quantity <= 0 ? "Out of Stock" : Model.Quantity < Model.MinStockLevel ? "Low Stock" : "In Stock")
+                            </span>
+                            <h1 class="fw-bold text-dark">@Model.Name</h1>
+                            <p class="text-muted">SKU: <span class="fw-bold">@Model.SKU</span> | Category: <span class="fw-bold">@Model.Category</span></p>
+                        </div>
+                        <div class="text-end">
+                            <h2 class="fw-bold text-primary">@Model.Price.ToString("C")</h2>
+                            <small class="text-muted">Unit Price</small>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-body px-4 pb-4">
+                    <div class="row g-4 mt-2">
+                        <div class="col-sm-4">
+                            <div class="p-3 border rounded-3 bg-light">
+                                <small class="text-muted d-block text-uppercase fw-bold fs-xs">Current Stock</small>
+                                <span class="h4 fw-bold">@Model.Quantity</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="p-3 border rounded-3 bg-light">
+                                <small class="text-muted d-block text-uppercase fw-bold fs-xs">Min. Threshold</small>
+                                <span class="h4 fw-bold">@Model.MinStockLevel</span>
+                            </div>
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="p-3 border rounded-3 bg-light">
+                                <small class="text-muted d-block text-uppercase fw-bold fs-xs">Warehouse</small>
+                                <span class="h5 fw-bold d-block text-truncate">@Model.WarehouseId</span> @* Replace with Model.Warehouse.Name if loaded *@
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 text-center p-4 mb-4">
+                <h6 class="fw-bold text-muted mb-3">Asset Tag (QR)</h6>
+                @if (!string.IsNullOrEmpty(Model.QRCodeBase64))
+                {
+                    <img src="data:image/png;base64,@Model.QRCodeBase64" class="img-fluid mx-auto rounded border p-2 bg-white mb-3" style="max-width: 200px;" />
+                    <button class="btn btn-outline-dark btn-sm w-100" onclick="window.print()">
+                        <i class="bi bi-printer me-2"></i>Print Label
+                    </button>
+                }
+                else
+                {
+                    <div class="py-5 bg-light rounded-3 border border-dashed">
+                        <i class="bi bi-qr-code text-muted display-4"></i>
+                        <p class="small text-muted mt-2">No QR Code Generated</p>
+                    </div>
+                }
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-4 p-3">
+                <div class="d-grid gap-2">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary py-2 fw-bold rounded-3">
+                        <i class="bi bi-pencil-square me-2"></i>Edit Product
+                    </a>
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger py-2 fw-semibold rounded-3 border-0">
+                        <i class="bi bi-trash me-2"></i>Remove from System
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

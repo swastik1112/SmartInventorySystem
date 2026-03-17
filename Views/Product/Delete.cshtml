@@ -1,0 +1,40 @@
+﻿@model SmartInventorySystem.Models.Product
+
+@{
+    ViewData["Title"] = "Confirm Deletion";
+}
+
+<div class="container py-5 animate__animated animate__headShake">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="bg-danger py-4 text-center text-white">
+                    <i class="bi bi-exclamation-octagon display-4"></i>
+                    <h3 class="fw-bold mt-2">Delete Product?</h3>
+                </div>
+
+                <div class="card-body p-4 p-md-5 text-center">
+                    <p class="text-muted mb-1">You are about to permanently remove</p>
+                    <h4 class="fw-bold text-dark mb-4">@Model.Name</h4>
+
+                    <div class="alert alert-warning border-0 rounded-3 small text-start mb-4">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        This will remove all stock history, QR codes, and associated records for SKU: <strong>@Model.SKU</strong>. This action is irreversible.
+                    </div>
+
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger btn-lg py-3 fw-bold rounded-3 shadow-sm hover-lift">
+                                Yes, Permanently Delete
+                            </button>
+                            <a asp-action="Index" class="btn btn-light btn-lg py-3 fw-semibold border rounded-3">
+                                Cancel and Keep
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

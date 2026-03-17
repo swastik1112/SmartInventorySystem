@@ -1,0 +1,81 @@
+﻿@model Supplier
+
+@{
+    ViewData["Title"] = "Confirm Deletion";
+}
+
+<div class="container py-5 animate__animated animate__headShake">
+    <div class="row justify-content-center">
+        <div class="col-lg-7 col-xl-6">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="bg-danger py-4 text-center text-white">
+                    <i class="bi bi-exclamation-octagon display-4 mb-2 d-block"></i>
+                    <h3 class="fw-bold mb-0">Confirm Deletion</h3>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <div class="text-center mb-4">
+                        <p class="text-muted mb-1">You are about to permanently remove</p>
+                        <h4 class="fw-bold text-dark">@Model.Name</h4>
+                    </div>
+
+                    <div class="alert alert-warning border-0 rounded-3 small d-flex align-items-center mb-4">
+                        <i class="bi bi-info-circle-fill fs-4 me-3"></i>
+                        <div>
+                            <strong>Caution:</strong> This action is irreversible. All associated contact records for <strong>@Model.ContactPerson</strong> will be wiped from the system.
+                        </div>
+                    </div>
+
+                    <div class="bg-light rounded-4 p-4 mb-4">
+                        <div class="row g-3">
+                            <div class="col-sm-4 text-muted small fw-bold text-uppercase">Email</div>
+                            <div class="col-sm-8 small text-dark">@Model.Email</div>
+
+                            <div class="col-sm-4 text-muted small fw-bold text-uppercase">Phone</div>
+                            <div class="col-sm-8 small text-dark">@Model.Phone</div>
+
+                            <div class="col-sm-4 text-muted small fw-bold text-uppercase">Location</div>
+                            <div class="col-sm-8 small text-dark">@Model.Address</div>
+                        </div>
+                    </div>
+
+                    <form asp-action="Delete">
+                        <input type="hidden" asp-for="Id" />
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-danger btn-lg py-3 fw-bold rounded-3 shadow-sm hover-lift">
+                                <i class="bi bi-trash3-fill me-2"></i>Permanently Delete Supplier
+                            </button>
+                            <a asp-action="Index" class="btn btn-light btn-lg py-3 fw-semibold border rounded-3">
+                                No, Keep This Supplier
+                            </a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <div class="text-center mt-4">
+                <p class="small text-muted">
+                    Confused? <a asp-action="Details" asp-route-id="@Model.Id" class="text-decoration-none">Review supplier history</a> first.
+                </p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .animate__headShake {
+        animation-duration: 0.8s;
+    }
+
+    .bg-light {
+        background-color: #f8f9fa !important;
+    }
+
+    .hover-lift {
+        transition: transform 0.2s;
+    }
+
+        .hover-lift:hover {
+            transform: translateY(-2px);
+        }
+</style>

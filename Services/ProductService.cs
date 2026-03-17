@@ -124,5 +124,19 @@ namespace SmartInventorySystem.Services
         public async Task<int> GetLowStockCountAsync() => await _context.Products.CountAsync(p => p.Quantity < p.MinStockLevel);
         public async Task UpdateAsync(Product product) => await _repo.UpdateAsync(product);
         public async Task DeleteAsync(int id) => await _repo.DeleteAsync(id);
+
+        public async Task<int> GetOutOfStockCountAsync()
+        {
+            return await _context.Products.CountAsync(p => p.Quantity <= 0);
+        }
+
+        public async Task<List<Product>> GetTopLowStockProductsAsync(int take)
+        {
+            return await _context.Products
+                .Where(p => p.Quantity > 0 && p.Quantity <= p.MinStockLevel)
+                .OrderBy(p => p.Quantity)
+                .Take(take)
+                .ToListAsync();
+        }
     }
 }

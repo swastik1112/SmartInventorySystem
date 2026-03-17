@@ -1,4 +1,5 @@
 ﻿using SmartInventorySystem.Models;
+using System.Threading.Tasks;
 
 namespace SmartInventorySystem.Services
 {
@@ -13,5 +14,8 @@ namespace SmartInventorySystem.Services
         Task<int> GetLowStockCountAsync();
         // IProductService.cs
         Task<int> GetTotalCountAsync(string search = "");
+
+        Task<int> GetOutOfStockCountAsync();               // new
+        Task<List<Product>> GetTopLowStockProductsAsync(int take);  // new
     }
 }

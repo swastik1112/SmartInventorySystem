@@ -1,4 +1,5 @@
-﻿<div class="row">
+﻿<div style="min-height: 10vh;"></div>
+<div class="row">
     <div class="col-md-3"><div class="card bg-primary text-white">Total Products: @ViewBag.TotalProducts</div></div>
     <div class="col-md-3"><div class="card bg-warning text-white">Low Stock: @ViewBag.LowStock</div></div>
 </div>
@@ -14,3 +15,186 @@
         }
     });
 </script>
+
+
+@* @{
+    ViewData["Title"] = "Dashboard";
+}
+
+<div class="container-fluid px-4 py-4">
+    <h2 class="mb-4 fw-bold text-dark">Inventory Dashboard</h2>
+
+    <!-- KPI Cards Row -->
+    <div class="row g-4 mb-5">
+        <!-- Total Products -->
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-box-seam fs-1 text-primary"></i>
+                    </div>
+                    <h5 class="card-title text-muted small">Total Products</h5>
+                    <h3 class="fw-bold mb-0">@ViewBag.TotalProducts</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Stock Items -->
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card shadow-sm border-0 h-100 @(ViewBag.LowStock > 10 ? "bg-danger text-white" : "bg-warning text-dark")">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-exclamation-triangle fs-1"></i>
+                    </div>
+                    <h5 class="card-title small">Low Stock Items</h5>
+                    <h3 class="fw-bold mb-0">@ViewBag.LowStock</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Out of Stock (if you add this metric) -->
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card shadow-sm border-0 h-100 bg-secondary text-white">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-x-circle fs-1"></i>
+                    </div>
+                    <h5 class="card-title small">Out of Stock</h5>
+                    <h3 class="fw-bold mb-0">@ViewBag.OutOfStock</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Suppliers -->
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-truck fs-1 text-success"></i>
+                    </div>
+                    <h5 class="card-title text-muted small">Suppliers</h5>
+                    <h3 class="fw-bold mb-0">@ViewBag.TotalSuppliers</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Today's Sales -->
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-cart-check fs-1 text-info"></i>
+                    </div>
+                    <h5 class="card-title text-muted small">Today's Sales</h5>
+                    <h3 class="fw-bold mb-0">@ViewBag.TodaySales.ToString("C0")</h3>
+                </div>
+            </div>
+        </div>
+
+        <!-- Monthly Revenue -->
+        <div class="col-6 col-md-4 col-xl-2">
+            <div class="card shadow-sm border-0 h-100">
+                <div class="card-body text-center">
+                    <div class="mb-3">
+                        <i class="bi bi-currency-dollar fs-1 text-warning"></i>
+                    </div>
+                    <h5 class="card-title text-muted small">This Month Revenue</h5>
+                    <h3 class="fw-bold mb-0">@ViewBag.MonthlyRevenue.ToString("C0")</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="row g-4">
+        <!-- Revenue Trend (Last 30 Days) -->
+        <div class="col-lg-8">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Revenue Trend (Last 30 Days)</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="revenueChart" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <!-- Low Stock Products Bar Chart -->
+        <div class="col-lg-4">
+            <div class="card shadow-sm border-0">
+                <div class="card-header bg-white border-bottom">
+                    <h5 class="mb-0">Top Low Stock Products</h5>
+                </div>
+                <div class="card-body">
+                    <canvas id="lowStockChart" height="120"></canvas>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        // Revenue Trend Chart
+        const revenueCtx = document.getElementById('revenueChart').getContext('2d');
+        new Chart(revenueCtx, {
+            type: 'line',
+            data: {
+                labels: @Json.Serialize(ViewBag.ChartLabels ?? new string[0]),
+                datasets: [{
+                    label: 'Daily Revenue',
+                    data: @Json.Serialize(ViewBag.ChartData ?? new decimal[0]),
+                    borderColor: '#0d6efd',
+                    backgroundColor: 'rgba(13, 110, 253, 0.1)',
+                    tension: 0.4,
+                    fill: true,
+                    pointBackgroundColor: '#0d6efd',
+                    pointBorderColor: '#fff',
+                    pointHoverRadius: 6
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { position: 'top' },
+                    tooltip: { mode: 'index', intersect: false }
+                },
+                scales: {
+                    y: { beginAtZero: true, title: { display: true, text: 'Revenue' } },
+                    x: { title: { display: true, text: 'Date' } }
+                }
+            }
+        });
+
+        // Low Stock Bar Chart (example – pass real data from controller)
+        const lowStockCtx = document.getElementById('lowStockChart').getContext('2d');
+        new Chart(lowStockCtx, {
+            type: 'bar',
+            data: {
+                labels: @Json.Serialize(ViewBag.LowStockLabels ?? new string[] { "No data" }),
+                datasets: [{
+                    label: 'Current Stock',
+                    data: @Json.Serialize(ViewBag.LowStockQuantities ?? new int[] { 0 }),
+                    backgroundColor: '#dc3545',
+                    borderColor: '#b02a37',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y', // horizontal bars for better readability
+                plugins: {
+                    legend: { display: false },
+                    tooltip: { callbacks: { label: (ctx) => `${ctx.label}: ${ctx.raw} units` } }
+                },
+                scales: {
+                    x: { beginAtZero: true, title: { display: true, text: 'Quantity' } }
+                }
+            }
+        });
+    </script>
+} *@

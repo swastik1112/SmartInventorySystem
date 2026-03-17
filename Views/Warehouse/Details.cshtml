@@ -1,0 +1,77 @@
+﻿@model Warehouse
+
+@{
+    ViewData["Title"] = "Warehouse Details";
+}
+
+<div class="container py-5 animate__animated animate__fadeIn">
+    <nav aria-label="breadcrumb" class="mb-4">
+        <a asp-action="Index" class="text-decoration-none small text-muted">
+            <i class="bi bi-arrow-left me-1"></i> Back to Warehouses
+        </a>
+    </nav>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4 p-md-5">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="icon-shape bg-primary text-white rounded-3 me-3 p-3">
+                            <i class="bi bi-building fs-3"></i>
+                        </div>
+                        <div>
+                            <h1 class="fw-bold text-dark mb-0">@Model.Name</h1>
+                            <p class="text-muted mb-0"><i class="bi bi-geo-alt me-1"></i> @Model.Location</p>
+                        </div>
+                    </div>
+
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <div class="p-4 border rounded-4 bg-light">
+                                <small class="text-uppercase fw-bold text-muted fs-xs d-block mb-2">Total Capacity</small>
+                                <h3 class="fw-bold mb-0">@Model.Capacity <small class="text-muted h6">Units</small></h3>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-4 border rounded-4 bg-light">
+                                <small class="text-uppercase fw-bold text-muted fs-xs d-block mb-2">Warehouse Status</small>
+                                <h3 class="fw-bold mb-0 text-success">Active</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-white py-3 px-4 border-bottom">
+                    <h5 class="fw-bold mb-0">Stored Products</h5>
+                </div>
+                <div class="card-body p-0">
+                    <div class="text-center py-5">
+                        <i class="bi bi-box-seam display-4 text-light"></i>
+                        <p class="text-muted mt-2">Filter the Product Index by this warehouse to see items.</p>
+                        <a asp-controller="Product" asp-action="Index" class="btn btn-sm btn-outline-primary rounded-pill">View Global Inventory</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="card border-0 shadow-sm rounded-4 p-4 sticky-top" style="top: 2rem;">
+                <h5 class="fw-bold mb-4">Management</h5>
+                <div class="d-grid gap-2">
+                    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary py-2 fw-bold rounded-3">
+                        <i class="bi bi-pencil-square me-2"></i>Edit Warehouse
+                    </a>
+                    <a asp-action="Index" class="btn btn-light py-2 fw-semibold rounded-3 border">
+                        Back to List
+                    </a>
+                    <hr class="my-3">
+                    <a asp-action="Delete" asp-route-id="@Model.Id" class="btn btn-outline-danger py-2 fw-semibold rounded-3 border-0">
+                        <i class="bi bi-trash me-2"></i>Delete Location
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

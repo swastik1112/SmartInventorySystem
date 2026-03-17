@@ -1,0 +1,53 @@
+﻿@model Warehouse
+
+@{
+    var isNew = Model == null || Model.Id == 0;
+    ViewData["Title"] = isNew ? "Add Warehouse" : "Edit Warehouse";
+}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card border-0 shadow-lg rounded-4 overflow-hidden">
+                <div class="bg-dark py-4 text-center text-white">
+                    <h3 class="fw-bold mb-0">@(isNew ? "New Storage Location" : "Update Warehouse")</h3>
+                </div>
+                <div class="card-body p-4 p-md-5">
+                    <form asp-action="@(isNew ? "Create" : "Edit")">
+                        <div asp-validation-summary="ModelOnly" class="text-danger small mb-3"></div>
+                        <input type="hidden" asp-for="Id" />
+
+                        <div class="mb-3">
+                            <label asp-for="Name" class="form-label fw-bold"></label>
+                            <input asp-for="Name" class="form-control bg-light border-0" placeholder="e.g. North Logistics Hub" />
+                            <span asp-validation-for="Name" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-3">
+                            <label asp-for="Location" class="form-label fw-bold"></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-light border-0"><i class="bi bi-pin-map"></i></span>
+                                <input asp-for="Location" class="form-control bg-light border-0" placeholder="City, State or Address" />
+                            </div>
+                            <span asp-validation-for="Location" class="text-danger small"></span>
+                        </div>
+
+                        <div class="mb-4">
+                            <label asp-for="Capacity" class="form-label fw-bold"></label>
+                            <input asp-for="Capacity" class="form-control bg-light border-0" type="number" />
+                            <div class="form-text">Maximum total units this facility can hold.</div>
+                            <span asp-validation-for="Capacity" class="text-danger small"></span>
+                        </div>
+
+                        <div class="d-grid gap-2">
+                            <button type="submit" class="btn btn-primary btn-lg py-3 fw-bold rounded-3 hover-lift">
+                                <i class="bi bi-save2 me-2"></i>Save Warehouse
+                            </button>
+                            <a asp-action="Index" class="btn btn-light btn-lg py-3 fw-semibold border-0">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
