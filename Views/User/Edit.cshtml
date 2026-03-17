@@ -1,43 +1,139 @@
 ﻿@using SmartInventorySystem.ViewModels
 @model EditUserViewModel
 
-<h2>Edit User</h2>
+@{
+    ViewData["Title"] = "Edit User";
+}
+<style>
+    .form-switch .form-check-input {
+        width: 2.5em;
+        height: 1.25em;
+        cursor: pointer;
+    }
 
-<form asp-action="Edit">
-    <input type="hidden" asp-for="Id" />
+    .bg-danger-subtle {
+        background-color: rgba(220, 53, 69, 0.05) !important;
+    }
 
-    <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
+    .card-title i {
+        opacity: 0.7;
+    }
+
+    /* Smooth transition for the switch label */
+    .form-check-label {
+        cursor: pointer;
+        user-select: none;
+    }
+</style>
+<div class="container py-5 animate__animated animate__fadeIn">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+
+            <div class="d-flex align-items-center justify-content-between mb-4">
+                <div class="d-flex align-items-center">
+                    <a asp-action="Index" class="btn btn-outline-secondary btn-sm rounded-circle me-3">
+                        <i class="bi bi-chevron-left"></i>
+                    </a>
+                    <div>
+                        <h2 class="fw-bold mb-0">Edit Profile</h2>
+                        <span class="badge bg-primary-subtle text-primary">User ID: @Model.Id.ToString().Substring(0, 8)...</span>
+                    </div>
+                </div>
+            </div>
+
+            <form asp-action="Edit" id="editForm">
+                <input type="hidden" asp-for="Id" />
+
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-body p-4 p-md-5">
+                        <h5 class="card-title mb-4 pb-2 border-bottom fw-bold text-primary">
+                            <i class="bi bi-person-gear me-2"></i>Account Information
+                        </h5>
+
+                        <div class="row g-3">
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="FullName" class="form-control bg-light border-0" placeholder="Full Name" />
+                                    <label asp-for="FullName">Full Name</label>
+                                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Email" class="form-control bg-light border-0" placeholder="Email" />
+                                    <label asp-for="Email">Email Address</label>
+                                    <span asp-validation-for="Email" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-12">
+                                <div class="form-check form-switch p-3 bg-light rounded-3 ms-0 d-flex align-items-center">
+                                    <input asp-for="EmailConfirmed" class="form-check-input ms-0 me-3" type="checkbox" role="switch" id="emailSwitch">
+                                    <label class="form-check-label fw-semibold" for="emailSwitch">
+                                        Email Verification Status
+                                        <small class="d-block text-muted fw-normal">Manually confirm or revoke email access</small>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h5 class="card-title mt-5 mb-4 pb-2 border-bottom fw-bold text-primary">
+                            <i class="bi bi-shield-check me-2"></i>Access Levels
+                        </h5>
+
+                        <div class="row g-3">
+                            @foreach (var role in Model.AvailableRoles)
+                            {
+                                <div class="col-md-4">
+                                    <div class="role-card">
+                                        <input type="checkbox" name="SelectedRoles" value="@role" id="role_@role" class="btn-check"
+                                               @(Model.SelectedRoles != null && Model.SelectedRoles.Contains(role) ? "checked" : "")>
+                                        <label class="btn btn-outline-primary w-100 py-3 rounded-3 d-flex flex-column align-items-center gap-2" for="role_@role">
+                                            <i class="bi bi-shield-lock fs-4"></i>
+                                            <span class="fw-bold small">@role</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-white p-4 border-top d-flex justify-content-end gap-2 rounded-bottom-4">
+                        <a asp-action="Index" class="btn btn-light px-4">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-5 fw-bold hover-lift" id="saveBtn">
+                            Save Changes <i class="bi bi-check2-all ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <div class="card border-danger border-opacity-25 bg-danger bg-opacity-10 rounded-4">
+                <div class="card-body p-4 d-flex justify-content-between align-items-center">
+                    <div>
+                        <h6 class="fw-bold text-danger mb-1">Account Security</h6>
+                        <p class="small text-muted mb-0">Force a password reset if the user has forgotten their credentials.</p>
+                    </div>
+                    <a asp-action="ResetPassword" asp-route-id="@Model.Id" class="btn btn-outline-danger btn-sm px-3 fw-bold">
+                        <i class="bi bi-key me-2"></i>Reset Password
+                    </a>
+                </div>
+            </div>
+
+        </div>
     </div>
+</div>
 
-    <div class="form-group">
-        <label asp-for="FullName"></label>
-        <input asp-for="FullName" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label>Roles</label>
-        <select multiple asp-for="SelectedRoles" class="form-control">
-            @foreach (var role in Model.AvailableRoles)
-            {
-                <option value="@role" selected="@(Model.SelectedRoles?.Contains(role) ?? false)">@role</option>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Loading animation on save
+        document.getElementById('editForm').onsubmit = function() {
+            if($(this).valid()){
+                const btn = document.getElementById('saveBtn');
+                btn.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Saving...`;
+                btn.disabled = true;
             }
-        </select>
-    </div>
-
-    <div class="form-check">
-        <input asp-for="EmailConfirmed" class="form-check-input" type="checkbox" />
-        <label asp-for="EmailConfirmed" class="form-check-label">Email Confirmed</label>
-    </div>
-
-    <button type="submit" class="btn btn-primary mt-3">Save</button>
-    <a asp-action="Index" class="btn btn-secondary mt-3">Cancel</a>
-</form>
-
-<!-- Link to reset password separately -->
-<p class="mt-4">
-    <a asp-action="ResetPassword" asp-route-id="@Model.Id" class="btn btn-warning btn-sm">
-        Reset Password
-    </a>
-</p>
+        };
+    </script>
+}

@@ -1,36 +1,131 @@
 ﻿@using SmartInventorySystem.ViewModels
 @model IEnumerable<UserViewModel>
 
-<h2>Users Management</h2>
+@{
+    ViewData["Title"] = "User Management";
+}
 
-<p>
-    <a asp-action="Create" class="btn btn-primary">Create New User</a>
-</p>
+<style>
+    /* Table Header Typography */
+    .fs-xs {
+        font-size: 0.75rem;
+        letter-spacing: 0.05rem;
+    }
 
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Email</th>
-            <th>Full Name</th>
-            <th>Roles</th>
-            <th>Confirmed</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>@item.Email</td>
-                <td>@item.FullName</td>
-                <td>@string.Join(", ", item.Roles)</td>
-                <td>@(item.EmailConfirmed ? "Yes" : "No")</td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
-                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a> |
-                    <a asp-action="ResetPassword" asp-route-id="@item.Id">Reset Password</a>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+    /* Avatar Placeholder */
+    .avatar-sm {
+        width: 40px;
+        height: 40px;
+        font-size: 14px;
+    }
+
+    /* Subtle Badge Colors (Bootstrap 5.3+ Utilities) */
+    .bg-info-subtle {
+        background-color: rgba(13, 202, 240, 0.15) !important;
+    }
+
+    .bg-success-subtle {
+        background-color: rgba(25, 135, 84, 0.15) !important;
+    }
+
+    .bg-warning-subtle {
+        background-color: rgba(255, 193, 7, 0.15) !important;
+    }
+
+    /* Table Row Hover */
+    .table-hover tbody tr:hover {
+        background-color: #fbfbfb;
+        transition: background-color 0.2s ease;
+    }
+
+    /* Dropdown styling */
+    .dropdown-item:active {
+        background-color: #667eea;
+    }
+</style>
+<div style="min-height: 5vh;"></div>
+<div class="container-fluid py-4 animate__animated animate__fadeIn">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <div>
+            <h2 class="fw-bold mb-0">User Management</h2>
+            <p class="text-muted small">Manage system access levels and user profiles</p>
+        </div>
+        <a asp-action="Create" class="btn btn-primary btn-lg shadow-sm hover-lift">
+            <i class="bi bi-person-plus-fill me-2"></i>Create New User
+        </a>
+    </div>
+
+    <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+        <div class="table-responsive">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="bg-light">
+                    <tr>
+                        <th class="ps-4 py-3 text-uppercase fs-xs fw-bold text-muted">User Details</th>
+                        <th class="py-3 text-uppercase fs-xs fw-bold text-muted">Roles</th>
+                        <th class="py-3 text-uppercase fs-xs fw-bold text-muted text-center">Status</th>
+                        <th class="py-3 text-uppercase fs-xs fw-bold text-muted text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="4" class="text-center py-5 text-muted">No users found.</td>
+                        </tr>
+                    }
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td class="ps-4 py-3">
+                                <div class="d-flex align-items-center">
+                                    <div class="avatar-sm me-3 bg-primary-subtle text-primary rounded-circle d-flex align-items-center justify-content-center fw-bold">
+                                        @item.FullName.Substring(0, 1).ToUpper()
+                                    </div>
+                                    <div>
+                                        <div class="fw-bold text-dark">@item.FullName</div>
+                                        <div class="small text-muted">@item.Email</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td>
+                                @foreach (var role in item.Roles)
+                                {
+                                    <span class="badge bg-info-subtle text-info border border-info-subtle rounded-pill px-3 py-2 me-1">
+                                        @role
+                                    </span>
+                                }
+                            </td>
+                            <td class="text-center">
+                                @if (item.EmailConfirmed)
+                                {
+                                    <span class="badge bg-success-subtle text-success rounded-pill px-3 py-2">
+                                        <i class="bi bi-check-circle-fill me-1"></i> Confirmed
+                                    </span>
+                                }
+                                else
+                                {
+                                    <span class="badge bg-warning-subtle text-warning rounded-pill px-3 py-2">
+                                        <i class="bi bi-exclamation-circle-fill me-1"></i> Pending
+                                    </span>
+                                }
+                            </td>
+                            <td class="text-end pe-4">
+                                <div class="dropdown">
+                                    <button class="btn btn-light btn-sm rounded-circle border-0" type="button" data-bs-toggle="dropdown">
+                                        <i class="bi bi-three-dots-vertical"></i>
+                                    </button>
+                                    <ul class="dropdown-menu dropdown-menu-end shadow border-0 rounded-3">
+                                        <li><a class="dropdown-item py-2" asp-action="Edit" asp-route-id="@item.Id"><i class="bi bi-pencil me-2 text-primary"></i> Edit</a></li>
+                                        <li><a class="dropdown-item py-2" asp-action="ResetPassword" asp-route-id="@item.Id"><i class="bi bi-key me-2 text-warning"></i> Reset Password</a></li>
+                                        <li><hr class="dropdown-divider"></li>
+                                        <li><a class="dropdown-item py-2 text-danger" asp-action="Delete" asp-route-id="@item.Id"><i class="bi bi-trash me-2"></i> Delete</a></li>
+                                    </ul>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

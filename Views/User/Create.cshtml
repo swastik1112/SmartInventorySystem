@@ -1,36 +1,122 @@
 ﻿@using SmartInventorySystem.ViewModels
 @model CreateUserViewModel
 
-<h2>Create User</h2>
+@{
+    ViewData["Title"] = "Create New User";
+}
+<style>
+    /* Role Card Selection Logic */
+    .role-card label {
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 2px solid transparent;
+        background: #f8f9fa;
+        color: #495057;
+    }
 
-<form asp-action="Create">
-    <!-- No Id field here -->
-    <div class="form-group">
-        <label asp-for="Email"></label>
-        <input asp-for="Email" class="form-control" />
-        <span asp-validation-for="Email" class="text-danger"></span>
+    .role-card input:checked + label {
+        background-color: #e7f1ff;
+        border-color: #0d6efd;
+        color: #0d6efd;
+        box-shadow: 0 4px 12px rgba(13, 110, 253, 0.15);
+        transform: translateY(-3px);
+    }
+
+    .role-card label:hover {
+        background-color: #f1f3f5;
+        transform: translateY(-2px);
+    }
+
+    /* Floating label override for light background */
+    .form-floating > .form-control:focus ~ label,
+    .form-floating > .form-control:not(:placeholder-shown) ~ label {
+        color: #0d6efd;
+    }
+
+    /* Form Section Transitions */
+    .card-title {
+        font-size: 0.9rem;
+        letter-spacing: 0.05rem;
+        text-transform: uppercase;
+    }
+</style>
+<div class="container py-5 animate__animated animate__fadeIn">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="mb-4 d-flex align-items-center">
+                <a asp-action="Index" class="btn btn-link text-decoration-none p-0 me-3">
+                    <i class="bi bi-arrow-left fs-4"></i>
+                </a>
+                <div>
+                    <h2 class="fw-bold mb-0">Create New User</h2>
+                    <p class="text-muted">Fill in the details to add a new member to the system.</p>
+                </div>
+            </div>
+
+            <form asp-action="Create" id="createForm">
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4 p-md-5">
+
+                        <h5 class="card-title mb-4 pb-2 border-bottom fw-bold text-primary">
+                            <i class="bi bi-person-badge me-2"></i>Account Details
+                        </h5>
+
+                        <div class="row g-3">
+                            <div class="col-md-12">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="FullName" class="form-control bg-light border-0" placeholder="John Doe" />
+                                    <label asp-for="FullName">Full Name</label>
+                                    <span asp-validation-for="FullName" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3">
+                                    <input asp-for="Email" class="form-control bg-light border-0" placeholder="name@example.com" />
+                                    <label asp-for="Email">Email Address</label>
+                                    <span asp-validation-for="Email" class="text-danger small"></span>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="form-floating mb-3 position-relative">
+                                    <input asp-for="Password" id="passwordInput" class="form-control bg-light border-0" placeholder="Password" type="password" />
+                                    <label asp-for="Password">Password</label>
+                                    <button type="button" class="btn position-absolute top-50 end-0 translate-middle-y me-2 border-0" onclick="togglePassword()">
+                                        <i class="bi bi-eye text-muted" id="passwordIcon"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h5 class="card-title mt-4 mb-4 pb-2 border-bottom fw-bold text-primary">
+                            <i class="bi bi-shield-lock me-2"></i>Assign Roles
+                        </h5>
+
+                        <div class="row g-3">
+                            @foreach (var role in Model.AvailableRoles)
+                            {
+                                <div class="col-md-4">
+                                    <div class="role-card">
+                                        <input type="checkbox" name="SelectedRoles" value="@role" id="role_@role" class="btn-check"
+                                               @(Model.SelectedRoles != null && Model.SelectedRoles.Contains(role) ? "checked" : "")>
+                                        <label class="btn btn-outline-primary w-100 py-3 rounded-3 d-flex flex-column align-items-center gap-2" for="role_@role">
+                                            <i class="bi bi-person-gear fs-4"></i>
+                                            <span class="fw-bold small">@role</span>
+                                        </label>
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
+                    <div class="card-footer bg-light p-4 border-0 d-flex justify-content-end gap-2 rounded-bottom-4">
+                        <a asp-action="Index" class="btn btn-light px-4">Cancel</a>
+                        <button type="submit" class="btn btn-primary px-5 fw-bold hover-lift" id="submitBtn">
+                            Create User <i class="bi bi-person-plus ms-2"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
-
-    <div class="form-group">
-        <label asp-for="Password"></label>
-        <input asp-for="Password" class="form-control" type="password" />
-    </div>
-
-    <div class="form-group">
-        <label asp-for="FullName"></label>
-        <input asp-for="FullName" class="form-control" />
-    </div>
-
-    <div class="form-group">
-        <label>Roles</label>
-        <select multiple asp-for="SelectedRoles" class="form-control">
-            @foreach (var role in Model.AvailableRoles)
-            {
-                <option value="@role">@role</option>
-            }
-        </select>
-    </div>
-
-    <button type="submit" class="btn btn-primary mt-3">Create</button>
-    <a asp-action="Index" class="btn btn-secondary mt-3">Cancel</a>
-</form>
+</div>
