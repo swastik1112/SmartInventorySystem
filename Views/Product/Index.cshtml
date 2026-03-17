@@ -1,0 +1,14 @@
+﻿@using X.PagedList.Mvc.Core
+@model X.PagedList.IPagedList<Product>
+<table class="table">
+    @foreach (var p in Model)
+    {
+        <tr class="@(p.Quantity < p.MinStockLevel ? "table-danger" : "")">
+            <td>@p.Name</td>
+            <td>@p.SKU</td>
+            <td>@p.Quantity</td>
+            <td><img src="data:image/png;base64,@p.QRCodeBase64" width="50" /></td>
+        </tr>
+    }
+</table>
+@Html.PagedListPager(Model, page => Url.Action("Index", new { page }))

@@ -1,0 +1,16 @@
+﻿<div class="row">
+    <div class="col-md-3"><div class="card bg-primary text-white">Total Products: @ViewBag.TotalProducts</div></div>
+    <div class="col-md-3"><div class="card bg-warning text-white">Low Stock: @ViewBag.LowStock</div></div>
+</div>
+
+<canvas id="salesChart" height="100"></canvas>
+
+<script>
+    new Chart(document.getElementById('salesChart'), {
+        type: 'line',
+        data: {
+            labels: @Json.Serialize(ViewBag.ChartLabels),
+            datasets: [{ label: 'Revenue', data: @Json.Serialize(ViewBag.ChartData), borderColor: 'blue' }]
+        }
+    });
+</script>

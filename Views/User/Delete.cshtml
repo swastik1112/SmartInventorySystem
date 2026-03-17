@@ -1,0 +1,22 @@
+﻿@using SmartInventorySystem.ViewModels
+@model UserViewModel
+
+<h3>Delete User - @Model.Email</h3>
+
+<h4>Are you sure you want to delete this user?</h4>
+<div>
+    <dl class="row">
+        <dt class="col-sm-2">Email</dt>
+        <dd class="col-sm-10">@Model.Email</dd>
+        <dt class="col-sm-2">Full Name</dt>
+        <dd class="col-sm-10">@Model.FullName</dd>
+        <dt class="col-sm-2">Roles</dt>
+        <dd class="col-sm-10">@string.Join(", ", Model.Roles)</dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
