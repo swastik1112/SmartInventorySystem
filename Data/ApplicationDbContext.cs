@@ -58,6 +58,12 @@ public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
             .HasForeignKey(p => p.SupplierId)
             .OnDelete(DeleteBehavior.Restrict);   // ← or DeleteBehavior.NoAction / ClientSetNull
 
+        builder.Entity<AuditLog>()
+         .HasOne(a => a.User)
+         .WithMany()
+         .HasForeignKey(a => a.UserId)
+         .OnDelete(DeleteBehavior.SetNull);   // ← this is what you want
+
         // Optional: same pattern for other entities if needed
         // e.g. Sale → Product (cascade), but Sale has no Supplier FK so no issue there
     }

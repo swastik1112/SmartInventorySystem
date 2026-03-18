@@ -16,6 +16,6 @@ namespace SmartInventorySystem.Services
         Task<int> GetTotalCountAsync(string search = "");
 
         Task<int> GetOutOfStockCountAsync();               // new
-        Task<List<Product>> GetTopLowStockProductsAsync(int take);  // new
+        Task<IEnumerable<Product>> GetTopLowStockProductsAsync(int count);
     }
 }

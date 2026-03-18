@@ -130,13 +130,13 @@ namespace SmartInventorySystem.Services
             return await _context.Products.CountAsync(p => p.Quantity <= 0);
         }
 
-        public async Task<List<Product>> GetTopLowStockProductsAsync(int take)
+        public async Task<IEnumerable<Product>> GetTopLowStockProductsAsync(int count)
         {
             return await _context.Products
-                .Where(p => p.Quantity > 0 && p.Quantity <= p.MinStockLevel)
+                .Where(p => p.Quantity <= p.MinStockLevel)
                 .OrderBy(p => p.Quantity)
-                .Take(take)
-                .ToListAsync();
+                .Take(count)
+                .ToListAsync(); // This returns a List, which fits inside IEnumerable
         }
     }
 }

@@ -74,35 +74,40 @@ namespace SmartInventorySystem.Controllers
             }
         }
 
-        [HttpGet]
+        [HttpGet] // Ensure this is here
         public async Task<IActionResult> DownloadInventory()
         {
-            var data = await _context.Products.Include(p => p.Category).ToListAsync();
-
-            using (var workbook = new XLWorkbook())
+            try
             {
-                var worksheet = workbook.Worksheets.Add("Inventory");
-                worksheet.Cell(1, 1).Value = "Product Name";
-                worksheet.Cell(1, 2).Value = "Category";
-                worksheet.Cell(1, 3).Value = "Stock";
+                var data = await _context.Products.ToListAsync(); // Test without Include first
 
-                for (int i = 0; i < data.Count; i++)
+                using (var workbook = new XLWorkbook())
                 {
-                    worksheet.Cell(i + 2, 1).Value = data[i].Name;
+                    var worksheet = workbook.Worksheets.Add("Inventory");
+                    worksheet.Cell(1, 1).Value = "Product Name";
+                    worksheet.Cell(1, 2).Value = "Category";
+                    worksheet.Cell(1, 3).Value = "Stock";
 
-                    // FIX: Check if Category is an object or a string
-                    // If Category is an object: data[i].Category?.Name
-                    // If Category is a string: data[i].Category
-                    worksheet.Cell(i + 2, 2).Value = data[i].Category?.ToString() ?? "N/A";
+                    for (int i = 0; i < data.Count; i++)
+                    {
+                        worksheet.Cell(i + 2, 1).Value = data[i].Name;
+                        worksheet.Cell(i + 2, 2).Value = data[i].Category?.ToString() ?? "N/A";
+                        worksheet.Cell(i + 2, 3).Value = data[i].Quantity;
+                    }
 
-                    worksheet.Cell(i + 2, 3).Value = data[i].Quantity;
+                    using (var stream = new MemoryStream())
+                    {
+                        workbook.SaveAs(stream);
+                        var content = stream.ToArray();
+                        // Adding a return here ensures the browser gets the file signal
+                        return File(content, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Inventory_Report.xlsx");
+                    }
                 }
-
-                using (var stream = new MemoryStream())
-                {
-                    workbook.SaveAs(stream);
-                    return File(stream.ToArray(), "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "Inventory.xlsx");
-                }
+            }
+            catch (Exception ex)
+            {
+                // If it fails, this will show you the error instead of doing nothing
+                return Content($"Error: {ex.Message}");
             }
         }
 

@@ -1,0 +1,126 @@
+﻿@model ApplicationUser
+@{
+    ViewData["Title"] = "Account Settings";
+}
+
+<div class="container py-5 animate__animated animate__fadeIn">
+    <div class="row">
+        <div class="col-lg-3 mb-4">
+            <div class="card border-0 shadow-sm rounded-4 overflow-hidden">
+                <div class="card-body p-0">
+                    <div class="text-center py-4 bg-primary text-white">
+                        <div class="avatar-lg bg-white text-primary rounded-circle d-inline-flex align-items-center justify-content-center mb-2 shadow" style="width: 80px; height: 80px; font-size: 2rem;">
+                            @Model.FullName?[0]
+                        </div>
+                        <h5 class="fw-bold mb-0">@Model.FullName</h5>
+                        <small class="opacity-75">@Model.Email</small>
+                    </div>
+                    <div class="list-group list-group-flush" id="settings-tabs" role="tablist">
+                        <a class="list-group-item list-group-item-action active border-0 py-3" data-bs-toggle="pill" href="#profile-pane">
+                            <i class="bi bi-person-circle me-2"></i> Personal Info
+                        </a>
+                        <a class="list-group-item list-group-item-action border-0 py-3" data-bs-toggle="pill" href="#security-pane">
+                            <i class="bi bi-shield-lock me-2"></i> Security
+                        </a>
+                        <a class="list-group-item list-group-item-action border-0 py-3" data-bs-toggle="pill" href="#pref-pane">
+                            <i class="bi bi-gear-wide-connected me-2"></i> Preferences
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-9">
+            <div class="tab-content border-0 shadow-sm rounded-4 card">
+
+                <div class="tab-pane fade show active card-body p-4" id="profile-pane">
+                    <div class="d-flex justify-content-between align-items-center mb-4">
+                        <h4 class="fw-bold mb-0">Personal Details</h4>
+                        <button class="btn btn-primary btn-sm rounded-pill px-3">Edit Profile</button>
+                    </div>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label class="small text-muted text-uppercase fw-bold">Full Name</label>
+                            <p class="fs-5 border-bottom pb-2">@Model.FullName</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="small text-muted text-uppercase fw-bold">Username</label>
+                            <p class="fs-5 border-bottom pb-2">@Model.UserName</p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="small text-muted text-uppercase fw-bold">Email Address</label>
+                            <p class="fs-5 border-bottom pb-2">@Model.Email <span class="badge bg-success-subtle text-success ms-2 small">Verified</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <label class="small text-muted text-uppercase fw-bold">Account Role</label>
+                            <p class="fs-5 border-bottom pb-2 text-primary fw-bold">System Administrator</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade card-body p-4" id="security-pane">
+                    <h4 class="fw-bold mb-4">Security Settings</h4>
+                    <div class="mb-4 p-3 bg-light rounded-3 d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="fw-bold mb-1">Change Password</h6>
+                            <p class="small text-muted mb-0">Last changed 3 months ago</p>
+                        </div>
+                        <button class="btn btn-outline-dark btn-sm rounded-pill">Update</button>
+                    </div>
+                    <div class="mb-0 p-3 bg-light rounded-3 d-flex align-items-center justify-content-between">
+                        <div>
+                            <h6 class="fw-bold mb-1">Two-Factor Authentication</h6>
+                            <p class="small text-muted mb-0">Add an extra layer of security to your account.</p>
+                        </div>
+                        <div class="form-check form-switch">
+                            <input class="form-check-switch" type="checkbox" role="switch">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tab-pane fade card-body p-4" id="pref-pane">
+                    <h4 class="fw-bold mb-4">System Preferences</h4>
+                    <form>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Theme Mode</label>
+                            <div class="d-flex gap-3">
+                                <input type="radio" class="btn-check" name="theme" id="light" checked>
+                                <label class="btn btn-outline-primary rounded-3 px-4" for="light"><i class="bi bi-sun me-1"></i> Light</label>
+
+                                <input type="radio" class="btn-check" name="theme" id="dark">
+                                <label class="btn btn-outline-primary rounded-3 px-4" for="dark"><i class="bi bi-moon-stars me-1"></i> Dark</label>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <label class="form-label fw-bold">Notification Email</label>
+                            <div class="form-check mb-2">
+                                <input class="form-check-input" type="checkbox" checked>
+                                <label class="form-check-label">Notify me on Low Stock alerts</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" checked>
+                                <label class="form-check-label">Weekly performance reports</label>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-primary rounded-pill px-4">Save Changes</button>
+                    </form>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .list-group-item.active {
+        background-color: rgba(13, 110, 253, 0.1) !important;
+        color: #0d6efd !important;
+        font-weight: bold;
+        border-left: 4px solid #0d6efd !important;
+    }
+
+    .bg-success-subtle {
+        background-color: #d1e7dd;
+    }
+</style>
